@@ -1,0 +1,30 @@
+# Default values for postgresql-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Default values for postgresql-chart.
+
+image:
+  repository: timescale/timescaledb
+  tag: "latest-pg16"
+  pullPolicy: IfNotPresent
+
+auth:
+  user: postgres
+  password: postgres
+  db: postgres
+
+service:
+  type: ClusterIP
+  port: 5432
+  targetPort: 5432
+
+persistence:
+  accessMode: ReadWriteOnce
+  size: 10Gi
+  pgData: /data/pgdata
+  mountPath: /data/pgdata
+  subPath: pgdata
+  storageClassName: null
+
+sqlScript: ""

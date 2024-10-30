@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-timescaledb
+  labels:
+    app: {{ .Release.Name }}-timescaledb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-timescaledb
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-timescaledb
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-timescaledb
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+              hostPort: 5432
+              hostIP: 127.0.0.1
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-timescaledb-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-timescaledb-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-timescaledb-secret
+                  key: POSTGRES_DB
+            - name: PGDATA
+              value: {{ .Values.persistence.pgData }}
+          volumeMounts:
+            - name: {{ .Release.Name }}-timescaledb-data
+              mountPath: {{ .Values.persistence.mountPath }}
+              subPath: {{ .Values.persistence.subPath }}
+            - name: {{ .Release.Name }}-sql-init
+              mountPath: /docker-entrypoint-initdb.d/init.sql
+              subPath: init.sql
+      volumes:
+        - name: {{ .Release.Name }}-timescaledb-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-timescaledb-data
+        - name: {{ .Release.Name }}-sql-init
+          configMap:
+            name: {{ .Release.Name }}-timescaledb-init
