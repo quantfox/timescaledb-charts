@@ -5,9 +5,13 @@
 # Default values for postgresql-chart.
 
 image:
+  # The repository where the image of timescaledb will be pulled.
   repository: timescale/timescaledb
+  # The tag to use in the repository
   tag: "latest-pg16"
+  # The pull policy to use for pulling the image.
   pullPolicy: IfNotPresent
+  imagePullSecrets: ""
 
 auth:
   user: postgres

@@ -53,3 +53,7 @@ spec:
         - name: {{ .Release.Name }}-sql-init
           configMap:
             name: {{ .Release.Name }}-timescaledb-init
+      {{ if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+          - name: {{ .Values.image.imagePullSecrets }}
+      {{ end }}

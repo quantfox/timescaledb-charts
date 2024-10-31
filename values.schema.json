@@ -17,6 +17,9 @@
         },
         "image": {
             "properties": {
+                "imagePullSecrets": {
+                    "type": "string"
+                },
                 "pullPolicy": {
                     "type": "string"
                 },
