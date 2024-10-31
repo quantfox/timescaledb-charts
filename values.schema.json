@@ -1,0 +1,74 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "properties": {
+        "auth": {
+            "properties": {
+                "db": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "image": {
+            "properties": {
+                "pullPolicy": {
+                    "type": "string"
+                },
+                "repository": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "persistence": {
+            "properties": {
+                "accessMode": {
+                    "type": "string"
+                },
+                "mountPath": {
+                    "type": "string"
+                },
+                "pgData": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "string"
+                },
+                "storageClassName": {
+                    "type": "string"
+                },
+                "subPath": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "service": {
+            "properties": {
+                "port": {
+                    "type": "integer"
+                },
+                "targetPort": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "sqlScript": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}
