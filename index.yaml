@@ -1,15 +1,29 @@
 apiVersion: v1
 entries:
   timescaledb:
+  - annotations:
+      artifacthub.io/category: Database
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-10-31T11:24:51.170345+01:00"
+    description: A Helm chart for deploying TimescaleDB on Kubernetes
+    digest: 656395a17e749957a7e8f50219dcf1cff14553ada15f3171abe127fb05e44f34
+    icon: https://avatars.githubusercontent.com/u/139450580?s=400&v=4
+    name: timescaledb
+    type: application
+    urls:
+    - timescaledb-1.1.0.tgz
+    version: 1.1.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-10-30T23:43:36.578251+01:00"
+    created: "2024-10-31T11:24:51.169795+01:00"
     description: A Helm chart for Kubernetes
     digest: a9f188ca5d60fac584f607f3b511f6768e147a5d68004b004812f80af609006e
     icon: https://avatars.githubusercontent.com/u/139450580?s=400&v=4
     name: timescaledb
     type: application
     urls:
-    - https://quantfox.github.io/timescaledb-charts/timescaledb-1.0.0.tgz
+    - timescaledb-1.0.0.tgz
     version: 1.0.0
-generated: "2024-10-30T23:43:36.577692+01:00"
+generated: "2024-10-31T11:24:51.169226+01:00"
