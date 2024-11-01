@@ -1,0 +1,9 @@
+{{- if .Values.postgresqlConfig }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-postgresql-config
+data:
+  init.sql: |
+{{ .Values.postgresqlConfig | indent 4 }}
+{{- end }}

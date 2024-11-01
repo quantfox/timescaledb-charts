@@ -15,6 +15,9 @@
             },
             "type": "object"
         },
+        "debugMode": {
+            "type": "boolean"
+        },
         "image": {
             "properties": {
                 "imagePullSecrets": {
@@ -32,10 +35,36 @@
             },
             "type": "object"
         },
+        "livenessProbe": {
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "failureThreshold": {
+                    "type": "integer"
+                },
+                "initialDelaySeconds": {
+                    "type": "integer"
+                },
+                "periodSeconds": {
+                    "type": "integer"
+                },
+                "successThreshold": {
+                    "type": "integer"
+                },
+                "timeoutSeconds": {
+                    "type": "integer"
+                }
+            },
+            "type": "object"
+        },
         "persistence": {
             "properties": {
                 "accessMode": {
                     "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
                 },
                 "mountPath": {
                     "type": "string"
@@ -47,10 +76,47 @@
                     "type": "string"
                 },
                 "storageClassName": {
-                    "type": "string"
+                    "type": [
+                        "string",
+                        "null"
+                    ]
                 },
                 "subPath": {
                     "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "provisioning": {
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "sqlScript": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "readinessProbe": {
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "failureThreshold": {
+                    "type": "integer"
+                },
+                "initialDelaySeconds": {
+                    "type": "integer"
+                },
+                "periodSeconds": {
+                    "type": "integer"
+                },
+                "successThreshold": {
+                    "type": "integer"
+                },
+                "timeoutSeconds": {
+                    "type": "integer"
                 }
             },
             "type": "object"

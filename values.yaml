@@ -13,6 +13,12 @@ image:
   pullPolicy: IfNotPresent
   imagePullSecrets: ""
 
+debugMode: false
+
+postgresqlConfig: ""
+
+initSqlScript: ""
+
 auth:
   user: postgres
   password: postgres
@@ -23,12 +29,31 @@ service:
   port: 5432
   targetPort: 5432
 
+provisioning:
+  enabled: false
+  sqlScript: ""
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
 persistence:
+  enabled: true
   accessMode: ReadWriteOnce
   size: 10Gi
   pgData: /data/pgdata
   mountPath: /data/pgdata
   subPath: pgdata
   storageClassName: null
-
-sqlScript: ""

@@ -1,0 +1,50 @@
+{{- if .Values.provisioning.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-timescaledb-provisioning
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: wait-for-db
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          env:
+              - name: PGPASSWORD
+                value: {{ .Values.auth.password }}
+          command:
+              - /bin/sh
+              - -c
+              - |
+              until pg_isready -h {{ .Release.Name }}-timescaledb -U {{ .Values.auth.user }} -d {{ .Values.auth.db }}; do
+                echo "Waiting for the database to be ready..."
+                sleep 2
+              done
+      containers:
+        - name: timescaledb-provisioning
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          env:
+            - name: PGPASSWORD
+              value: {{ .Values.auth.password }}
+          command:
+            - psql
+          args:
+            - -h
+            - {{ .Release.Name }}-timescaledb
+            - -U
+            - {{ .Values.auth.user }}
+            - -d
+            - {{ .Values.auth.db }}
+            - -f
+            - /provisioning/provisioning.sql
+          volumeMounts:
+            - name: {{ .Release.Name }}-timescaledb-provisioning-script
+              mountPath: /provisioning/provisioning.sql
+              readOnly: true
+      volumes:
+        - name: {{ .Release.Name }}-timescaledb-provisioning-script
+          configMap:
+            name: {{ .Release.Name }}-timescaledb-provisioning-script
+{{- end }}

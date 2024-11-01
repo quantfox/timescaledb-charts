@@ -1,0 +1,9 @@
+{{- if .Values.provisioning.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-timescaledb-provisioning
+data:
+  provisioning.sql: |
+{{ .Values.provisioning.sqlScript | indent 4 }}
+{{- end }}

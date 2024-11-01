@@ -1,7 +1,9 @@
+{{- if .Values.initSqlScript }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-timescaledb-init
 data:
   init.sql: |
-{{ .Values.sqlScript | indent 4 }}
+{{ .Values.initSqlScript | indent 4 }}
+{{- end }}

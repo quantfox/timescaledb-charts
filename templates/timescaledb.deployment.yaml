@@ -3,24 +3,30 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-timescaledb
   labels:
-    app: {{ .Release.Name }}-timescaledb
+    app: timescaledb
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-timescaledb
+      app: timescaledb
   template:
     metadata:
       labels:
         app: {{ .Release.Name }}-timescaledb
     spec:
       containers:
-        - name: {{ .Release.Name }}-timescaledb
+        - name: timescaledb
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
             - containerPort: {{ .Values.service.targetPort }}
               hostPort: 5432
               hostIP: 127.0.0.1
+          {{- if .Values.debugMode }}
+          command:
+            - sleep
+          args:
+            - infinity
+          {{- end }}
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -40,19 +46,63 @@ spec:
             - name: PGDATA
               value: {{ .Values.persistence.pgData }}
           volumeMounts:
+            {{- if .Values.persistence.enabled }}
             - name: {{ .Release.Name }}-timescaledb-data
               mountPath: {{ .Values.persistence.mountPath }}
               subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
+            {{- if .Values.initSqlScript }}
             - name: {{ .Release.Name }}-sql-init
               mountPath: /docker-entrypoint-initdb.d/init.sql
               subPath: init.sql
+            {{- end }}
+            {{- if .Values.postgresqlConfig }}
+            - name: {{ .Release.Name }}-postgresql-config
+              mountPath: {{ .Values.persistence.pgData }}
+              subPath: postgresql.conf
+            {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -h
+                - {{ .Release.Name }}-timescaledb
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -h
+                - {{ .Release.Name }}-timescaledb
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
       volumes:
+        {{- if .Values.persistence.enabled }}
         - name: {{ .Release.Name }}-timescaledb-data
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-timescaledb-data
+        {{- end }}
+        {{- if .Values.initSqlScript }}
         - name: {{ .Release.Name }}-sql-init
           configMap:
             name: {{ .Release.Name }}-timescaledb-init
+        {{- end }}
+        {{- if .Values.postgresqlConfig }}
+        - name: {{ .Release.Name }}-postgresql-config
+          configMap:
+            name: {{ .Release.Name }}-timescaledb-config
+        {{- end }}
       {{ if .Values.image.imagePullSecrets }}
       imagePullSecrets:
           - name: {{ .Values.image.imagePullSecrets }}
